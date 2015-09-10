@@ -4,8 +4,8 @@ CREATE
   (room3:ROOM{description:"There is no so much light here."}),
   (room4:ROOM{description:"This is the end my friend. If you liked it and you want to write some text game with Neo4J check this: https://github.com/agonzalezro/goqui. Hope that you enjoyed this short demo!"}),
 
-  (key:OBJECT{description:"A gold key, probably it helps you to open some door"}),
-  (door:OBJECT{description:"A door"}),
+  (key:OBJECT{name:"key", description:"A gold key, probably it helps you to open some door", pickable:true}),
+  (door:OBJECT{name: "door", description:"A closed door"}),
 
   (developer:PERSON{name:"Developer",response:"Do not make the same mistake I did and try to escape from here!"}),
 
@@ -16,11 +16,11 @@ CREATE
   (room1)-[:MOVE{direction:"north"}]->(room2),
   (room2)-[:MOVE{direction:"south"}]->(room1),
 
-  (room2)-[:SEE]->(key),
-  (room2)-[:SEE]->(door),
+  (room2)-[:CONTENTS]->(key),
+  (room2)-[:CONTENTS]->(door),
   (room2)-[:MOVE{direction:"east"}]->(room3),
   (room3)-[:MOVE{direction:"west"}]->(room2),
-  (room2)-[:MOVE_WITH_COND{condition:"door.open"}]->(room4),
+  (room2)-[:MOVE_WITH_CONDITION{condition:"door.open"}]->(room4),
   (room4)-[:MOVE{direction:"south"}]->(room2),
 
   (room3)-[:SEE]->(developer),
