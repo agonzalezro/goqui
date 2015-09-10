@@ -86,7 +86,19 @@ func (g Game) getRoomContentDescriptions(ds chan<- string) {
 }
 
 func (g Game) move(d string) {
-	fmt.Printf("MOVING TO %s", d)
+	cq := neoism.CypherQuery{
+		Statement: `
+          MATCH (p:PLAYER)-[i:IS_IN]-(:ROOM)-[m:MOVE]->(r:ROOM)
+		  WHERE m.direction = {d}
+		  DELETE i
+		  CREATE (p)-[:IS_IN]->(r)
+		`,
+		Parameters: neoism.Props{"d": d},
+	}
+
+	if err := g.db.Cypher(&cq); err != nil {
+		// DITTO
+	}
 }
 
 func (g Game) getRoom() *room {
@@ -101,22 +113,22 @@ func (g Game) getRoom() *room {
 
 func (g Game) canMove(d string) bool {
 	exits := []struct {
-		Count int `json:"m"`
+		Count int `json:"count(m)"`
 	}{}
 
 	cq := neoism.CypherQuery{
-		Statement:  "MATCH (:PLAYER)-[:IS_IN]-(:ROOM)-[m:MOVE]->(:ROOM) WHERE m.direction = {d} RETURN COUNT(m) AS m",
-		Parameters: neoism.Props{"d": strings.ToLower(d)},
+		Statement: `
+		    MATCH (:PLAYER)-[:IS_IN]-(:ROOM)-[m:MOVE]->(:ROOM)
+		    WHERE m.direction = {d}
+		    RETURN count(m)
+		`,
+		Parameters: neoism.Props{"d": d},
 		Result:     &exits,
 	}
 
 	if err := g.db.Cypher(&cq); err != nil {
 		// DITTO
-		log.Panic(err)
 	}
-
-	log.Println(exits)
-	log.Println(d)
 
 	return exits[0].Count > 0
 }
@@ -137,12 +149,18 @@ func (r room) describe() {
 func (g Game) loop() {
 	reader := bufio.NewReader(os.Stdin)
 
+	_cleanInput := func(input string) []string {
+		input = strings.Replace(input, "\n", "", -1)
+		input = strings.ToLower(input)
+		return strings.Split(input, " ")
+	}
+
 	for {
 		g.getRoom().describe()
 
 		fmt.Printf("\nWhat do you want to do?: ")
 		input, _ := reader.ReadString('\n')
-		action := strings.Split(input, " ")
+		action := _cleanInput(input)
 
 		switch action[0] {
 		case "move":

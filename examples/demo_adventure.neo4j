@@ -11,7 +11,7 @@ CREATE
 
   (player:PLAYER{name:"Gopher"}),
 
-  (player)-[:IS]->(room1),
+  (player)-[:IS_IN]->(room1),
 
   (room1)-[:MOVE{direction:"north"}]->(room2),
   (room2)-[:MOVE{direction:"south"}]->(room1),
