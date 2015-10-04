@@ -7,7 +7,7 @@ CREATE
   (key:OBJECT{name:"key", description:"A gold key, probably it helps you to open some door", pickable:true}),
   (door:OBJECT{name: "door", description:"A closed door"}),
 
-  (developer:PERSON{name:"Developer",response:"Do not make the same mistake I did and try to escape from here!"}),
+  (developer:PERSON{name:"Developer",message:"Do not make the same mistake I did and try to escape from here!"}),
 
   (player:PLAYER{name:"Gopher"}),
 
@@ -20,7 +20,7 @@ CREATE
   (room2)-[:CONTENTS]->(door),
   (room2)-[:MOVE{direction:"east"}]->(room3),
   (room3)-[:MOVE{direction:"west"}]->(room2),
-  (room2)-[:MOVE_WITH_CONDITION{condition:"door.open"}]->(room4),
+  (room2)-[:MOVE_WITH_CONDITION{condition:"door.open",message:"The door is closed!",direction:"north"}]->(room4),
   (room4)-[:MOVE{direction:"south"}]->(room2),
 
   (room3)-[:SEE]->(developer),

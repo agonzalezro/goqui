@@ -1,4 +1,67 @@
-DO NOT USE THIS YET
-===================
+goqui{,xote}
+============
 
-GO15VENDOREXPERIMENT=1
+`goqui` (aka `goquixote`) is a small experiment I made for fun. Basically it's
+an engine to use Neo4J as the backend of your old school text adventure games.
+
+In the folder `examples/` you will find some games (just one for now TBH) that
+you can import to your Neo4J to test this code.
+
+**Use this under your own responsability, I just created it for fun and the
+code is ugly and untested. Probably nothing is going to break, but if you want
+to learn some Go or Neo4J you should pick some other project out there :)**
+
+Quick start
+-----------
+
+1. Run Neo4J with Docker's help:
+
+    docker run -i -t -d --name neo4j --cap-add=SYS_RESOURCE -p 7474:7474 agonzalezro/neo4j
+
+2. Go to your docker host, port `7474` and import one of the examples.
+3. If you want to see how it looks:
+
+    MATCH (n)
+    OPTIONAL MATCH (n)-[r]-()
+    RETURN n, r
+
+4. Get `goqui` if you didn't yet:
+
+    go get github.com/agonzalezro/goqui
+
+4. Run the program against your Neo4J:
+
+    goqui -neo4j http://neo4j:password@b2d:7474/db/data"
+
+Playing
+-------
+
+Sadly, the CLI is very dumb for now. The action that you can perform are:
+
+- **move** *direction*
+- **pick** *object*
+- **use** *object* **with** object
+- **inventory**
+- **talk**
+- **describe**
+
+**Please, remember that you need to write those commands as they are, don't
+forget the articles or prepositions!**
+
+Developing
+----------
+
+I am using the Go 1.5 vendor experiment, so remember to set
+`GO15VENDOREXPERIMENT` to `1`.
+
+TODO
+----
+
+- Implement a Go-interface to easily change the game-interface.
+- Provide binaries.
+- The CLI should be hundred time more clever.
+- All the queries should be case insensitive
+- Return the message of `MOVE_WITH_CONDITION` when you can not move, ex: you
+  need to open the door before moving.
+- Tests? Yeah, this code was made just for fun but it should have some.
+- End the game if it's the final room.
