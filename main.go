@@ -321,12 +321,8 @@ func (r room) describe() {
 	}
 }
 
-func cls() {
-	// TODO: this should be multiplaform
-	print("\033[H\033[2J")
-}
-
 func (g Game) loop() {
+	var previousMessage string
 	reader := bufio.NewReader(os.Stdin)
 
 	_cleanInput := func(input string) []string {
@@ -335,10 +331,23 @@ func (g Game) loop() {
 		return strings.Split(input, " ")
 	}
 
+	_cls := func() {
+		// TODO: this should be multiplaform
+		print("\033[H\033[2J")
+	}
+
 	for {
+		_cls()
+
+		if previousMessage != "" {
+			fmt.Println(previousMessage)
+			fmt.Printf("\n")
+			previousMessage = ""
+		}
+
 		g.currentRoom().describe()
 
-		fmt.Printf("\nWhat do you want to do?: ")
+		fmt.Printf("\n> ")
 		input, _ := reader.ReadString('\n')
 		action := _cleanInput(input)
 
@@ -350,53 +359,50 @@ func (g Game) loop() {
 		switch action[0] {
 		case "move":
 			if err := g.move(phraseDirectObject[0]); err != nil {
-				fmt.Println("I can't move there")
-				fmt.Println("Tip: use DESCRIBE to see your possible exits.")
+				previousMessage = "You can't move there!"
 				break
 			}
 		case "pick": // TODO: get as well
 			object := phraseDirectObject[0]
 			if err := g.pick(object); err != nil {
-				fmt.Println("You can't pick that")
-				fmt.Println("Tip: use DESCRIBE to see the available objects, write: PICK object to get it.")
+				previousMessage = "You can't pick that!"
+				previousMessage += "\nTip: use DESCRIBE to see the available objects, write: PICK object to get it."
 				break
 			}
-			fmt.Printf("You picked %s\n", object)
+			previousMessage = fmt.Sprintf("You picked %s\n", object)
 		case "use":
 			item := phraseDirectObject[0]
 			object := phraseDirectObject[2] // TODO: 1 is "with", OMG huge assumption here
 			condition, err := g.use(item, object)
 			if err != nil {
-				fmt.Println("You can't do that.")
-				fmt.Printf("Tip: Do you own '%s'?\n", item) // TODO: return several errors to know how to "tip"
+				previousMessage = "You can't do that!"
+				previousMessage += fmt.Sprintf("Tip: Do you own '%s'?\n", item) // TODO: return several errors to know how to "tip"
 				break
 			}
-			fmt.Printf("The %s is now %s\n", object, strings.Split(condition, ".")[1])
+			previousMessage = fmt.Sprintf("The %s is now %s\n", object, strings.Split(condition, ".")[1])
 		case "inventory":
 			inventory := g.inventory()
-			fmt.Printf("You have: ")
+			previousMessage = "You have: "
 			if len(inventory) != 0 {
 				for _, o := range inventory {
-					fmt.Printf("\n- %s: %s", o.Name, o.Description)
+					previousMessage += fmt.Sprintf("\n- %s: %s", o.Name, o.Description)
 				}
-				fmt.Println()
+				previousMessage += "\n"
 			} else {
-				fmt.Println("nothing, you are quite poor my friend.")
+				previousMessage += "nothing, you are quite poor my friend.\n"
 			}
 		case "talk":
 			person := phraseDirectObject[1] // TODO: assuming "to" is the index 0
 			message, err := g.talk(person)
 			if err != nil {
-				fmt.Printf("You can't talk to: '%s'!\n", person)
+				previousMessage = fmt.Sprintf("You can't talk to: '%s'!\n", person)
 				break
 			}
-			fmt.Println(message)
+			previousMessage = fmt.Sprintf("%s says: %s", person, message)
 		default:
-			fmt.Println("I can't do that!")
-			fmt.Println("Tip: possible actionss are: MOVE, PICK, USE, INVENTORY & DESCRIBE")
+			previousMessage = "I can't do that!"
+			previousMessage += "Tip: possible actionss are: MOVE, PICK, USE, INVENTORY & DESCRIBE"
 		}
-
-		fmt.Printf("\n%s\n\n", strings.Repeat("-", 80))
 	}
 }
 
