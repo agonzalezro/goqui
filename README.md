@@ -73,6 +73,7 @@ I am using the Go 1.5 vendor experiment, so remember to set
 TODO
 ----
 
+- Explain how to create new adventures.
 - Lost of duplications everywhere.
 - Implement a Go-interface to easily change the game-interface.
 - Provide binaries.
