@@ -9,14 +9,12 @@ you can import to your Neo4J to test this code.
 
 How does it look like?
 
-`````
-This is a demo of goqui, I think that for now you should just move north :)
-You see: nothing.
-Your possible moves?:
-- north
+    This is a demo of goqui, I think that for now you should just move north :)
+    You see: nothing.
+    Your possible moves?:
+    - north
 
->
-`````
+    >
 
 But the most important bit, how does it look in Neo4J?
 
@@ -32,30 +30,22 @@ Quick start
 
 1. Run Neo4J with Docker's help:
 
-```
-docker run -i -t -d --name neo4j --cap-add=SYS_RESOURCE -p 7474:7474 agonzalezro/neo4j
-```
+        docker run -i -t -d --name neo4j --cap-add=SYS_RESOURCE -p 7474:7474 agonzalezro/neo4j
 
 2. Go to your docker host, port `7474` and import one of the examples.
 3. If you want to see how it looks:
 
-```
-MATCH (n)
-OPTIONAL MATCH (n)-[r]-()
-RETURN n, r
-```
+        MATCH (n)
+        OPTIONAL MATCH (n)-[r]-()
+        RETURN n, r
 
 4. Get `goqui` if you didn't yet:
 
-```
-go get github.com/agonzalezro/goqui
-```
+        go get github.com/agonzalezro/goqui
 
 4. Run the program against your Neo4J:
 
-```
-goqui -neo4j http://neo4j:password@b2d:7474/db/data"
-```
+        goqui -neo4j http://neo4j:password@b2d:7474/db/data"
 
 Playing
 -------
@@ -82,7 +72,7 @@ TODO
 ----
 
 - Explain how to create new adventures.
-- Lost of duplications everywhere.
+- Lots of duplications everywhere.
 - Implement a Go-interface to easily change the game-interface.
 - Provide binaries.
 - The CLI should be hundred time more clever.
