@@ -1,0 +1,83 @@
+CREATE
+  (slide1:ROOM{description:"Welcome to the Neo4J quest! You will learn a few things here."}),
+  
+  (slide2:ROOM{description:"In the beginning we had relational models:
+  
+  - you could use aggregations with joins or
+  - denormalize a lot of data
+  
+You see a guy called Martin at the end of this room.
+  "}),
+  
+  (martin:PERSON{name:"Martin", message:"Hi, my name is Martin Fowler.
+  
+I am here to explain you that there are several ways of denormalize data:
+
+  - KV, aka KeyValue, as Redis or Riak
+  - ColumnFamily docs as Cassandra
+  - Documents as MongoDB or Couch
+  
+  In the normalization world we have Graph DBs as Neo4J or other.
+  
+  Graph DBs are going to be important in your quest, move to the east to learn more."}),
+  
+  (slide2)-[:SEE]->(martin),
+  (slide1)-[:MOVE{direction:"north"}]->(slide2),
+  
+  (slide3:ROOM{description:"What's a graph? A group of nodes and relations between them.
+  
+They are not new at all, in 1735 Euler was already using them.
+
+He was trying to solve this problem: http://www.ck12.org/user:ZXBpc2RkbUBlcGlzZC5vcmc./book/EPISD-Discrete-Mathematics-2015-2016/section/2.0/"}),
+
+  (slide2)-[:MOVE{direction:"east"}]->(slide3),
+
+  (slide4:ROOM{description:"This is an example:
+  
+  Alex -- works for --> Jobandtalent
+  Felipe -- owns --> Jobandtalent
+  
+How Alex knows Felipe? Ask him, he is on this room."}),
+
+  (felipe:PERSON{name:"Felipe", message:"I don't remember, ask it to your favorite graph DB."}),
+  (slide4)-[:SEE]->(felipe),
+
+  (slide3)-[:MOVE{direction:"south"}]->(slide4),
+  
+  (slide5:ROOM{description:"What are they use cases?
+  
+- Social sites
+- Network analysis
+- Route finding
+- Recommendations
+- Logistic
+- Access control
+- Fraud analysis
+- ...
+
+Hey! It seem that Alex is here as well.
+"}),
+
+  (alex:PERSON{name:"Alex", message:"Well, another use case are this slides."}),
+
+  (slide4)-[:MOVE{direction:"south"}]->(slide5),
+  (slide5)-[:SEE]->(alex),
+
+  (slide6:ROOM{description:"Neo4J is
+
+- Fully ACID: Atomic, Consistent, Isolated, and Durable (ACID)
+- Open Source with closed extensions
+- Implemented in Java
+- REST API with & JDBC
+- Flexible schema
+"}),
+
+  (slide5)-[:MOVE{direction:"south"}]->(slide6),
+
+  (slide7:ROOM{description:"DEMO TIME!"}),
+
+  (slide6)-[:MOVE{direction:"east"}]->(slide7),
+
+  (player:PLAYER{name:"You"}),
+  (player)-[:IS_IN]->(slide1)
+  
